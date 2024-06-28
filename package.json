@@ -1,0 +1,13 @@
+{
+  "name": "kyoso-md-content",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "generate:blog": "node ./scripts/generate-blog.js"
+  },
+  "devDependencies": {
+    "gray-matter": "^4.0.3",
+    "valibot": "0.30.0"
+  }
+}
