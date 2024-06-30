@@ -10,11 +10,7 @@ const postSchema = v.object({
     v.custom((input) => /^[a-z0-9-]+$/g.test(input), 'Invalid slug'),
   ]),
   preview: v.string([v.minLength(1), v.maxLength(150)]),
-  image: v.transform(
-    v.string([v.minLength(1), v.maxLength(25)]),
-    (img) =>
-      `https://raw.githubusercontent.com/Kyoso-Team/md-content/main/blog/media/${img}`
-  ),
+  image_pathname: v.string([v.minLength(1), v.maxLength(50)]),
   tags: v.array(
     v.union([
       v.literal('Development'),
