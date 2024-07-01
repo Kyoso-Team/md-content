@@ -4,9 +4,11 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "generate:blog": "node ./scripts/generate-blog.js"
+    "generate:blog": "node ./scripts/generate-blog.js",
+    "generate:legal": "node ./scripts/generate-legal.js"
   },
   "devDependencies": {
+    "fuse.js": "^7.0.0",
     "gray-matter": "^4.0.3",
     "valibot": "0.30.0"
   }
