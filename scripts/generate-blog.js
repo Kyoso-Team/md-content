@@ -56,11 +56,6 @@ async function main() {
       .flatMap((post) => post.authors)
       .map((author) => [author.osu_user_id, author.osu_username])
   );
-  const search = posts.map(({ title, preview, slug }) => ({
-    title,
-    preview,
-    slug,
-  }));
   const index = Fuse.createIndex(
     [
       {
@@ -72,7 +67,7 @@ async function main() {
         weight: 0.75,
       },
     ],
-    search
+    mappedPosts
   ).toJSON();
   const newFiles = [
     {
@@ -82,10 +77,6 @@ async function main() {
     {
       data: authors,
       name: 'authors',
-    },
-    {
-      data: search,
-      name: 'search',
     },
     {
       data: index,
