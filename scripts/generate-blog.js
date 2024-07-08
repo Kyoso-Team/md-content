@@ -15,6 +15,19 @@ const postSchema = v.object({
   published_at: v.transform(v.date(), (date) =>
     date.toISOString().slice(0, 10)
   ),
+  tags: v.transform(
+    v.optional(
+      v.array(
+        v.union([
+          v.literal('Development'),
+          v.literal('Announcement'),
+          v.literal('Update'),
+          v.literal('Tutorial'),
+        ])
+      )
+    ),
+    (input) => input || []
+  ),
   authors: v.array(
     v.object({
       osu_user_id: v.number([v.integer(), v.minValue(1)]),
@@ -47,15 +60,23 @@ async function main() {
     posts.push(validated.output);
   }
 
-  const mappedPosts = posts.map((post) => ({
-    ...post,
-    authors: post.authors.map((author) => author.osu_user_id),
-  }));
   const authors = Object.fromEntries(
     posts
       .flatMap((post) => post.authors)
       .map((author) => [author.osu_user_id, author.osu_username])
   );
+  const tags = Object.fromEntries(
+    [...new Set(posts.flatMap((post) => post.tags))].map((tag, i) => [
+      (i + 1).toString(),
+      { name: tag, slug: tag.toLowerCase().replace(/ /g, '-') },
+    ])
+  );
+  const tagNames = Object.values(tags).map((tag) => tag.name);
+  const mappedPosts = posts.map((post) => ({
+    ...post,
+    authors: post.authors.map((author) => author.osu_user_id.toString()),
+    tags: post.tags.map((tag) => (tagNames.indexOf(tag) + 1).toString()),
+  }));
   const index = Fuse.createIndex(
     [
       {
@@ -77,6 +98,10 @@ async function main() {
     {
       data: authors,
       name: 'authors',
+    },
+    {
+      data: tags,
+      name: 'tags',
     },
     {
       data: index,
